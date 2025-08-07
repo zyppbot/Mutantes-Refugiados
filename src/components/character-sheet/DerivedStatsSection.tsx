@@ -30,7 +30,7 @@ export default function DerivedStatsSection() {
   
   // Aparar
   const lutaSkill = character.skills.find(s => s.name === 'Luta');
-  const baseParry = lutaSkill ? Math.floor(getNumericValueFromDice(getSkillDice(lutaSkill, character.attributes)) / 2) + 2 : 2;
+  const baseParry = lutaSkill ? getNumericValueFromDice(getSkillDice(lutaSkill, character.attributes)) + 2 : 2;
   
   // Add armor bonus to parry
   const armorParryBonus = character.armaduras.reduce((sum, armor) => sum + armor.parryBonus, 0);

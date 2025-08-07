@@ -11,6 +11,8 @@ import VantagesEComplicacoesSection from '@/components/character-sheet/VantagesE
 import EquipmentSection from '@/components/character-sheet/EquipmentSection';
 import PowersSection from '@/components/character-sheet/PowersSection';
 import InventorySection from '@/components/character-sheet/InventorySection';
+import MutationDisadvantageSection from '@/components/character-sheet/MutationDisadvantageSection';
+import EnhanceMutationSection from '@/components/character-sheet/EnhanceMutationSection';
 import { Button } from '@/components/ui/button';
 import { Download, Upload } from 'lucide-react';
 import type { Character } from '@/context/CharacterSheetContext';
@@ -114,6 +116,8 @@ function CharacterSheetContent() {
           <AttributesSection />
           <SkillsSection />
           <VantagesEComplicacoesSection />
+          <EnhanceMutationSection />
+          <MutationDisadvantageSection />
           <EquipmentSection />
           <PowersSection />
         </div>

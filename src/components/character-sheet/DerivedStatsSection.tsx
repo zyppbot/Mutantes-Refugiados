@@ -1,3 +1,4 @@
+
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCharacterSheet } from '@/context/CharacterSheetContext';
@@ -30,7 +31,10 @@ export default function DerivedStatsSection() {
   // Aparar
   const lutaSkill = character.skills.find(s => s.name === 'Luta');
   const baseParry = lutaSkill ? Math.floor(getNumericValueFromDice(getSkillDice(lutaSkill, character.attributes)) / 2) + 2 : 2;
-  const totalParry = baseParry + parryBonus;
+  
+  // Add armor bonus to parry
+  const armorParryBonus = character.armaduras.reduce((sum, armor) => sum + armor.parryBonus, 0);
+  const totalParry = baseParry + parryBonus + armorParryBonus;
   
   // Resistência
   const vigorDice = getDiceFromPoints(character.attributes.Vigor);
@@ -41,7 +45,9 @@ export default function DerivedStatsSection() {
     baseToughness -= 1;
   }
 
-  const totalToughness = baseToughness + toughnessBonus;
+  // Add armor bonus to toughness
+  const armorToughnessBonus = character.armaduras.reduce((sum, armor) => sum + armor.toughnessBonus, 0);
+  const totalToughness = baseToughness + toughnessBonus + armorToughnessBonus;
 
   const stats = [
     { name: 'Movimentação', value: `${movement}m` },

@@ -17,16 +17,17 @@ export interface Armamento {
   type: string;
   damage: string;
   weight: number;
-  cost: string;
+  cost: number;
   notes: string;
 }
 
 export interface Armadura {
   name: string;
   type: string;
-  bonus: number;
+  toughnessBonus: number;
+  parryBonus: number;
   weight: number;
-  cost: string;
+  cost: number;
   notes: string;
 }
 
@@ -43,6 +44,7 @@ export interface Item {
   id: string;
   name: string;
   weight: number;
+  cost: number;
 }
 
 
@@ -52,7 +54,7 @@ export const vantagensList: Vantagem[] = [
     { name: "Corajoso", description: "Você é mais resistente ao medo. Adiciona +2 a testes de Medo." },
     { name: "Cura Rápida", description: "Você se recupera de ferimentos mais rápido que o normal. Pode realizar testes de cura natural com mais frequência." },
     { name: "Furioso", description: "Pode entrar em um estado de fúria, ganhando bônus em Força e dano, mas com penalidades em ações que exigem concentração." },
-    { name: "Ligeiro", description: "O custo para ativar um poder específico (escolhido ao pegar esta Vantagem) é reduzido, ou sua eficácia é aumentada." },
+    { name: "Ligeiro", description: "A ativação de um poder específico (escolhido ao pegar esta Vantagem) é mais eficaz ou tem seu efeito aumentado." },
     { name: "Linguista", description: "Começa o jogo com um número de idiomas igual ao seu dado de Esperteza." },
     { name: "Musculoso", description: "Sua capacidade de carga é dobrada." },
     { name: "Nobre", description: "O personagem tem um título de nobreza, ganhando status e respeito, além de uma renda mensal." },
@@ -122,6 +124,7 @@ export const complicacoesList: Complicacao[] = [
   { name: 'Desagradável', description: 'O personagem tem uma personalidade irritante. Sofre -2 em testes de Persuasão.' },
   { name: 'Desajeitado', description: 'O personagem é desastrado e propenso a acidentes. Falha em um teste de Agilidade com 1 em um d20, independentemente do resultado do dado.' },
   { name: 'Desejo de Morrer', description: 'O personagem busca ativamente o perigo e a morte.' },
+  { name: 'Desvantagem de Mutação', description: 'Uma de suas mutações possui uma desvantagem significativa. Você deve escolher qual poder é afetado e descrever a desvantagem.' },
   { name: 'Duro de Ouvido', description: 'O personagem tem dificuldade para ouvir. Sofre -4 em testes de Notar baseados na audição.' },
   { name: 'Excesso de Confiança', description: 'O personagem superestima suas habilidades e subestima seus oponentes.' },
   { name: 'Feio', description: 'O personagem é fisicamente repulsivo. Sofre -2 em testes de Persuasão.' },
@@ -150,55 +153,55 @@ export const complicacoesList: Complicacao[] = [
 
 export const armamentosList: Armamento[] = [
   // Armas Corpo a Corpo
-  { name: "Faca", type: "Corpo a Corpo", damage: "For+d4", weight: 0.5, cost: "25", notes: "Pode ser arremessada." },
-  { name: "Canivete", type: "Corpo a Corpo", damage: "For+d4", weight: 0.2, cost: "10", notes: "Fácil de esconder." },
-  { name: "Soqueiras", type: "Corpo a Corpo", damage: "For+d4", weight: 0.5, cost: "20", notes: "Considerado ataque desarmado." },
-  { name: "Cacetete", type: "Corpo a Corpo", damage: "For+d6", weight: 1, cost: "15", notes: "" },
-  { name: "Porrete", type: "Corpo a Corpo", damage: "For+d6", weight: 2, cost: "10", notes: "Arma improvisada comum." },
-  { name: "Bastão", type: "Corpo a Corpo", damage: "For+d6", weight: 2, cost: "20", notes: "Aparar +1, Alcance 1." },
-  { name: "Chicote", type: "Corpo a Corpo", damage: "For+d4", weight: 1, cost: "30", notes: "Alcance 2, pode ser usado para manobras." },
-  { name: "Corrente", type: "Corpo a Corpo", damage: "For+d6", weight: 2.5, cost: "20", notes: "Ignora bônus de escudo." },
-  { name: "Bastão de Baseball", type: "Corpo a Corpo", damage: "For+d6", weight: 1.5, cost: "25", notes: "" },
-  { name: "Martelo", type: "Corpo a Corpo", damage: "For+d8", weight: 3, cost: "50", notes: "PA 1 contra armadura rígida." },
-  { name: "Espada", type: "Corpo a Corpo", damage: "For+d8", weight: 3, cost: "300", notes: "Aparar +1" },
-  { name: "Machado", type: "Corpo a Corpo", damage: "For+d8", weight: 4, cost: "250", notes: "PA 1" },
-  { name: "Mangual", type: "Corpo a Corpo", damage: "For+d8", weight: 4, cost: "200", notes: "Ignora bônus de Aparar de escudos." },
-  { name: "Katana", type: "Corpo a Corpo", damage: "For+d10", weight: 3, cost: "1000", notes: "PA 2, requer duas mãos." },
-  { name: "Marreta", type: "Corpo a Corpo", damage: "For+d10", weight: 10, cost: "150", notes: "PA 2, requer duas mãos, -1 Aparar." },
-  { name: "Motossera", type: "Corpo a Corpo", damage: "2d8", weight: 10, cost: "400", notes: "Barulhenta, requer combustível." },
+  { name: "Faca", type: "Corpo a Corpo", damage: "For+d4", weight: 0.5, cost: 25, notes: "Pode ser arremessada." },
+  { name: "Canivete", type: "Corpo a Corpo", damage: "For+d4", weight: 0.2, cost: 10, notes: "Fácil de esconder." },
+  { name: "Soqueiras", type: "Corpo a Corpo", damage: "For+d4", weight: 0.5, cost: 20, notes: "Considerado ataque desarmado." },
+  { name: "Cacetete", type: "Corpo a Corpo", damage: "For+d6", weight: 1, cost: 15, notes: "" },
+  { name: "Porrete", type: "Corpo a Corpo", damage: "For+d6", weight: 2, cost: 10, notes: "Arma improvisada comum." },
+  { name: "Bastão", type: "Corpo a Corpo", damage: "For+d6", weight: 2, cost: 20, notes: "Aparar +1, Alcance 1." },
+  { name: "Chicote", type: "Corpo a Corpo", damage: "For+d4", weight: 1, cost: 30, notes: "Alcance 2, pode ser usado para manobras." },
+  { name: "Corrente", type: "Corpo a Corpo", damage: "For+d6", weight: 2.5, cost: 20, notes: "Ignora bônus de escudo." },
+  { name: "Bastão de Baseball", type: "Corpo a Corpo", damage: "For+d6", weight: 1.5, cost: 25, notes: "" },
+  { name: "Martelo", type: "Corpo a Corpo", damage: "For+d8", weight: 3, cost: 50, notes: "PA 1 contra armadura rígida." },
+  { name: "Espada", type: "Corpo a Corpo", damage: "For+d8", weight: 3, cost: 300, notes: "Aparar +1" },
+  { name: "Machado", type: "Corpo a Corpo", damage: "For+d8", weight: 4, cost: 250, notes: "PA 1" },
+  { name: "Mangual", type: "Corpo a Corpo", damage: "For+d8", weight: 4, cost: 200, notes: "Ignora bônus de Aparar de escudos." },
+  { name: "Katana", type: "Corpo a Corpo", damage: "For+d10", weight: 3, cost: 1000, notes: "PA 2, requer duas mãos." },
+  { name: "Marreta", type: "Corpo a Corpo", damage: "For+d10", weight: 10, cost: 150, notes: "PA 2, requer duas mãos, -1 Aparar." },
+  { name: "Motossera", type: "Corpo a Corpo", damage: "2d8", weight: 10, cost: 400, notes: "Barulhenta, requer combustível." },
   
   // Armas de Longo Alcance
-  { name: "Arco de Caça", type: "Longo Alcance", damage: "2d6", weight: 1.5, cost: "150", notes: "Alcance 15/30/60." },
-  { name: "Pistola", type: "Longo Alcance", damage: "2d6", weight: 1, cost: "200", notes: "PA 1, Tiros 12, Alcance 12/24/48." },
-  { name: "Magnum", type: "Longo Alcance", damage: "2d6+1", weight: 2, cost: "300", notes: "PA 1, Tiros 6, Alcance 12/24/48." },
-  { name: "Carabina", type: "Longo Alcance", damage: "2d8-1", weight: 3, cost: "350", notes: "PA 2, Tiros 15, Alcance 20/40/80." },
-  { name: "Rifle de Caça", type: "Longo Alcance", damage: "2d8", weight: 4, cost: "400", notes: "PA 2, Tiros 5, Alcance 24/48/96." },
-  { name: "Espingarda", type: "Longo Alcance", damage: "1-3d6", weight: 4, cost: "300", notes: "Tiros 2, Alcance 12/24/48. +2 para acertar." },
-  { name: "Escopeta", type: "Longo Alcance", damage: "1-3d6", weight: 5, cost: "350", notes: "Tiros 6, Alcance 12/24/48. +2 para acertar." },
-  { name: "Submetralhadora", type: "Longo Alcance", damage: "2d6", weight: 3, cost: "500", notes: "PA 1, Tiros 30, Rajada, Alcance 12/24/48." },
-  { name: "Rifle de Assalto", type: "Longo Alcance", damage: "2d8", weight: 4, cost: "600", notes: "PA 2, Tiros 30, Rajada, Alcance 24/48/96." },
-  { name: "Rifle de Precisão", type: "Longo Alcance", damage: "2d10", weight: 6, cost: "1500", notes: "PA 4, Tiros 5, Alcance 50/100/200, Mira." },
-  { name: "Metralhadora de Mão", type: "Longo Alcance", damage: "2d8+1", weight: 9, cost: "1200", notes: "PA 2, Tiros 50, Rajada, Alcance 30/60/120." },
-  { name: "Metralhadora", type: "Longo Alcance", damage: "2d8+2", weight: 20, cost: "3000", notes: "PA 3, Tiros 200, Rajada, Montada, Alcance 50/100/200." },
+  { name: "Arco de Caça", type: "Longo Alcance", damage: "2d6", weight: 1.5, cost: 150, notes: "Alcance 15/30/60." },
+  { name: "Pistola", type: "Longo Alcance", damage: "2d6", weight: 1, cost: 200, notes: "PA 1, Tiros 12, Alcance 12/24/48." },
+  { name: "Magnum", type: "Longo Alcance", damage: "2d6+1", weight: 2, cost: 300, notes: "PA 1, Tiros 6, Alcance 12/24/48." },
+  { name: "Carabina", type: "Longo Alcance", damage: "2d8-1", weight: 3, cost: 350, notes: "PA 2, Tiros 15, Alcance 20/40/80." },
+  { name: "Rifle de Caça", type: "Longo Alcance", damage: "2d8", weight: 4, cost: 400, notes: "PA 2, Tiros 5, Alcance 24/48/96." },
+  { name: "Espingarda", type: "Longo Alcance", damage: "1-3d6", weight: 4, cost: 300, notes: "Tiros 2, Alcance 12/24/48. +2 para acertar." },
+  { name: "Escopeta", type: "Longo Alcance", damage: "1-3d6", weight: 5, cost: 350, notes: "Tiros 6, Alcance 12/24/48. +2 para acertar." },
+  { name: "Submetralhadora", type: "Longo Alcance", damage: "2d6", weight: 3, cost: 500, notes: "PA 1, Tiros 30, Rajada, Alcance 12/24/48." },
+  { name: "Rifle de Assalto", type: "Longo Alcance", damage: "2d8", weight: 4, cost: 600, notes: "PA 2, Tiros 30, Rajada, Alcance 24/48/96." },
+  { name: "Rifle de Precisão", type: "Longo Alcance", damage: "2d10", weight: 6, cost: 1500, notes: "PA 4, Tiros 5, Alcance 50/100/200, Mira." },
+  { name: "Metralhadora de Mão", type: "Longo Alcance", damage: "2d8+1", weight: 9, cost: 1200, notes: "PA 2, Tiros 50, Rajada, Alcance 30/60/120." },
+  { name: "Metralhadora", type: "Longo Alcance", damage: "2d8+2", weight: 20, cost: 3000, notes: "PA 3, Tiros 200, Rajada, Montada, Alcance 50/100/200." },
 
   // Armas Especiais e Explosivos
-  { name: "Lança-Chamas", type: "Especial", damage: "3d6", weight: 9, cost: "600", notes: "Modelo de Cone, Tiros 10." },
-  { name: "Granada", type: "Explosivo", damage: "3d6", weight: 0.5, cost: "100", notes: "Área Média, Alcance For*2." },
-  { name: "Minas", type: "Explosivo", damage: "4d6", weight: 2.5, cost: "250", notes: "PA 2, Área Média, acionada por pressão." },
-  { name: "Bastão de Disparo", type: "Especial", damage: "2d10", weight: 5, cost: "2000", notes: "PA 4, Tiros 1, Alcance 18/36/72. Arma energética." },
-  { name: "Canhão", type: "Pesado", damage: "5d8", weight: 200, cost: "10000", notes: "PA 10, Área Grande, requer montagem." },
+  { name: "Lança-Chamas", type: "Especial", damage: "3d6", weight: 9, cost: 600, notes: "Modelo de Cone, Tiros 10." },
+  { name: "Granada", type: "Explosivo", damage: "3d6", weight: 0.5, cost: 100, notes: "Área Média, Alcance For*2." },
+  { name: "Minas", type: "Explosivo", damage: "4d6", weight: 2.5, cost: 250, notes: "PA 2, Área Média, acionada por pressão." },
+  { name: "Bastão de Disparo", type: "Especial", damage: "2d10", weight: 5, cost: 2000, notes: "PA 4, Tiros 1, Alcance 18/36/72. Arma energética." },
+  { name: "Canhão", type: "Pesado", damage: "5d8", weight: 200, cost: 10000, notes: "PA 10, Área Grande, requer montagem." },
 ];
 
 export const armadurasList: Armadura[] = [
-    { name: "Jaqueta de Couro", type: "Leve", bonus: 1, weight: 2, cost: "50", notes: "Cobre o torso." },
-    { name: "Casaco de Couro Pesado", type: "Média", bonus: 2, weight: 8, cost: "150", notes: "Cobre o torso e braços." },
-    { name: "Colete a Prova de Balas", type: "Média", bonus: 3, weight: 5, cost: "200", notes: "Proteção balística para o torso. PA contra balas." },
-    { name: "Colete de Kevlar", type: "Média", bonus: 2, weight: 4, cost: "300", notes: "+4 vs balas, cobre o torso." },
-    { name: "Colete de Kevlar com Placas", type: "Pesada", bonus: 3, weight: 7, cost: "500", notes: "+4 vs balas, cobre o torso. Penalidade de Agilidade de -1." },
-    { name: "Roupa Anti-Corte", type: "Leve", bonus: 1, weight: 3, cost: "250", notes: "+2 contra ataques de corte e perfuração." },
-    { name: "Colete Reflexivo", type: "Leve", bonus: 0, weight: 1, cost: "100", notes: "Bônus contra ataques baseados em luz/laser." },
-    { name: "Capacete de Motociclista", type: "Capacete", bonus: 1, weight: 2, cost: "80", notes: "Protege contra dano na cabeça." },
-    { name: "Capacete de Aço", type: "Capacete", bonus: 2, weight: 3, cost: "150", notes: "Proteção superior para a cabeça." },
-    { name: "Escudo de Mão", type: "Escudo", bonus: 1, weight: 4, cost: "100", notes: "Concede +1 de Aparar." },
-    { name: "Escudo Policial", type: "Escudo", bonus: 2, weight: 8, cost: "250", notes: "Concede +2 de Aparar e cobertura leve." },
+    { name: "Jaqueta de Couro", type: "Leve", toughnessBonus: 1, parryBonus: 0, weight: 2, cost: 50, notes: "Cobre o torso." },
+    { name: "Casaco de Couro Pesado", type: "Média", toughnessBonus: 2, parryBonus: 0, weight: 8, cost: 150, notes: "Cobre o torso e braços." },
+    { name: "Colete a Prova de Balas", type: "Média", toughnessBonus: 3, parryBonus: 0, weight: 5, cost: 200, notes: "+4 vs balas, cobre o torso." },
+    { name: "Roupa Anti-Corte", type: "Leve", toughnessBonus: 2, parryBonus: 0, weight: 3, cost: 250, notes: "+4 vs ataques de corte/perfuração." },
+    { name: "Colete de Kevlar", type: "Média", toughnessBonus: 2, parryBonus: 0, weight: 4, cost: 300, notes: "+4 vs balas, cobre o torso." },
+    { name: "Colete de Kevlar com Placas", type: "Pesada", toughnessBonus: 3, parryBonus: 0, weight: 7, cost: 500, notes: "+4 vs balas, cobre o torso. Penalidade de Agilidade de -1." },
+    { name: "Colete de Material Reflexivo", type: "Leve", toughnessBonus: 0, parryBonus: 0, weight: 1, cost: 100, notes: "Bônus contra ataques baseados em luz/laser." },
+    { name: "Capacete de Motociclista", type: "Capacete", toughnessBonus: 1, parryBonus: 0, weight: 2, cost: 80, notes: "50% chance de proteger contra dano na cabeça." },
+    { name: "Capacete de Aço", type: "Capacete", toughnessBonus: 2, parryBonus: 0, weight: 3, cost: 150, notes: "50% chance de proteger contra dano na cabeça." },
+    { name: "Escudo de Mão", type: "Escudo", toughnessBonus: 0, parryBonus: 1, weight: 4, cost: 100, notes: "" },
+    { name: "Escudo Policial", type: "Escudo", toughnessBonus: 0, parryBonus: 2, weight: 8, cost: 250, notes: "Fornece cobertura Leve." },
 ];

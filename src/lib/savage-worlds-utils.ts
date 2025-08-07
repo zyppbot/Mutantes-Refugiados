@@ -22,48 +22,36 @@ export const getNumericValueFromDice = (dice: string): number => {
 
 export const getSkillDice = (skill: Skill, attributes: Character['attributes']): string => {
     const attrPoints = attributes[skill.attribute];
-    const attrDiceValue = getNumericValueFromDice(getDiceFromPoints(attrPoints));
-    
-    const skillSteps = Math.floor(skill.points / 2);
-    let finalDiceValue = attrDiceValue;
+    const attrDice = getDiceFromPoints(attrPoints);
+    const attrValue = getNumericValueFromDice(attrDice);
+    const attrDiceValOnly = parseInt(attrDice.match(/1d(\d+)/)![1], 10);
 
-    for (let i = 0; i < skillSteps; i++) {
-        if (finalDiceValue < 12) {
-            finalDiceValue += 2;
-        }
-    }
-    
-    let diceString = `1d${Math.min(finalDiceValue, 12)}`;
-    
-    if (finalDiceValue > 12) {
-        const modifier = finalDiceValue - 12;
-        diceString += `+${modifier}`;
-    } else if (skillSteps > 0 && finalDiceValue === 12) {
-        const remainingPoints = skill.points - ((12-attrDiceValue)/2) * 2;
-        if (remainingPoints > 0) {
-            const modifier = Math.floor(remainingPoints / 2) * 1; // Savage Worlds Adventurer's Edition rule is +1 per 2 points after d12
-            if(modifier > 0) diceString += `+${modifier}`;
-        }
-    }
+    let currentDice = 4;
+    let pointsSpent = 0;
+    let pointsAvailable = skill.points;
 
-
-    const originalModifierMatch = getDiceFromPoints(attrPoints).match(/\+(\d+)/);
-    if(originalModifierMatch) {
-        const originalModifier = parseInt(originalModifierMatch[1], 10);
-        const currentModifierMatch = diceString.match(/\+(\d+)/);
-        const currentModifier = currentModifierMatch ? parseInt(currentModifierMatch[1], 10) : 0;
-        const totalModifier = originalModifier + currentModifier;
-
-        if (diceString.includes('+')) {
-            diceString = diceString.replace(/\+\d+/, `+${totalModifier}`);
+    while (pointsAvailable > 0) {
+        const cost = currentDice >= attrDiceValOnly ? 2 : 1;
+        if (pointsAvailable >= cost) {
+            currentDice += 2;
+            pointsAvailable -= cost;
+            pointsSpent += cost;
         } else {
-            diceString += `+${totalModifier}`;
+            break;
         }
     }
-
+    
+    let diceString;
+    if (currentDice <= 12) {
+        diceString = `1d${currentDice}`;
+    } else {
+        const modifier = currentDice - 12;
+        diceString = `1d12+${modifier}`;
+    }
 
     return diceString;
 };
+
 
 export const rollDice = (dice: string): string => {
   const match = dice.match(/(\d+)d(\d+)(?:([+-])(\d+))?/);

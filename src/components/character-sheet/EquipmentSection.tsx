@@ -12,22 +12,7 @@ import { PlusCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 export default function EquipmentSection() {
-  const { character, updateField } = useCharacterSheet();
-
-  const handleSelect = (item: Armamento | Armadura, type: 'armamentos' | 'armaduras') => {
-    const currentList = character[type];
-    updateField(type, [...currentList, item as any]);
-  };
-  
-  const handleRemove = (item: Armamento | Armadura, type: 'armamentos' | 'armaduras') => {
-    const list = character[type];
-    const indexToRemove = list.findIndex(i => i.name === item.name);
-    if (indexToRemove > -1) {
-      const newList = [...list];
-      newList.splice(indexToRemove, 1);
-      updateField(type, newList as any);
-    }
-  };
+  const { character, addEquipment, removeEquipment } = useCharacterSheet();
 
   const renderArmamentos = (items: Armamento[]) => (
     <div className="flex flex-wrap gap-2">
@@ -37,18 +22,18 @@ export default function EquipmentSection() {
             <TooltipTrigger>
               <Badge 
                 variant="secondary"
-                className="text-base py-1 px-3 cursor-pointer hover:bg-primary/80"
-                onClick={() => handleRemove(item, 'armamentos')}
+                className="text-base py-1 px-3 cursor-pointer hover:bg-destructive/80"
+                onClick={() => removeEquipment(item, 'armamentos')}
               >
                 {item.name}
               </Badge>
             </TooltipTrigger>
             <TooltipContent>
-              <div className="p-2 space-y-1">
+              <div className="p-2 space-y-1 text-sm">
                 <p><strong>Tipo:</strong> {item.type}</p>
                 <p><strong>Dano:</strong> {item.damage}</p>
-                <p><strong>Peso:</strong> {item.weight}</p>
-                <p><strong>Custo:</strong> {item.cost}</p>
+                <p><strong>Peso:</strong> {item.weight}kg</p>
+                <p><strong>Custo:</strong> ${item.cost}</p>
                 {item.notes && <p><strong>Notas:</strong> {item.notes}</p>}
               </div>
             </TooltipContent>
@@ -66,18 +51,19 @@ export default function EquipmentSection() {
             <TooltipTrigger>
               <Badge 
                 variant="secondary"
-                className="text-base py-1 px-3 cursor-pointer hover:bg-primary/80"
-                onClick={() => handleRemove(item, 'armaduras')}
+                className="text-base py-1 px-3 cursor-pointer hover:bg-destructive/80"
+                onClick={() => removeEquipment(item, 'armaduras')}
               >
                 {item.name}
               </Badge>
             </TooltipTrigger>
             <TooltipContent>
-              <div className="p-2 space-y-1">
-                <p><strong>Tipo:</strong> {item.type}</p>
-                <p><strong>Bônus:</strong> +{item.bonus}</p>
-                <p><strong>Peso:</strong> {item.weight}</p>
-                <p><strong>Custo:</strong> {item.cost}</p>
+              <div className="p-2 space-y-1 text-sm">
+                 <p><strong>Tipo:</strong> {item.type}</p>
+                <p><strong>Resistência:</strong> +{item.toughnessBonus}</p>
+                <p><strong>Aparar:</strong> +{item.parryBonus}</p>
+                <p><strong>Peso:</strong> {item.weight}kg</p>
+                <p><strong>Custo:</strong> ${item.cost}</p>
                 {item.notes && <p><strong>Notas:</strong> {item.notes}</p>}
               </div>
             </TooltipContent>
@@ -105,7 +91,7 @@ export default function EquipmentSection() {
               <div
                 key={item.name}
                 className="p-2 rounded-md hover:bg-muted cursor-pointer"
-                onClick={() => handleSelect(item, type)}
+                onClick={() => addEquipment(item, type)}
               >
                 <h4 className="font-semibold">{item.name}</h4>
               </div>

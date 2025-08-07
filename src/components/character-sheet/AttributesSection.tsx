@@ -5,7 +5,7 @@ import { useCharacterSheet } from '@/context/CharacterSheetContext';
 import { attributeNames } from '@/lib/savage-worlds-data';
 import { getDiceFromPoints } from '@/lib/savage-worlds-utils';
 import { Minus, Plus } from 'lucide-react';
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from 'recharts';
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, PolarRadiusAxis } from 'recharts';
 import { ChartConfig } from '@/components/ui/chart';
 
 export default function AttributesSection() {
@@ -13,7 +13,7 @@ export default function AttributesSection() {
 
   const chartData = attributeNames.map((name) => ({
     attribute: name,
-    value: character.attributes[name],
+    value: character.attributes[name] + 1, // Add 1 to each value to create the base pentagon
   }));
   
   const chartConfig = {
@@ -51,9 +51,10 @@ export default function AttributesSection() {
         </div>
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={chartData}>
+            <RadarChart data={chartData} startAngle={90 + 36} endAngle={90 + 36 + 360}>
               <PolarGrid />
               <PolarAngleAxis dataKey="attribute" tick={{ fill: 'hsl(var(--foreground))', fontSize: 14 }} />
+              <PolarRadiusAxis angle={30} domain={[0, 5]} tick={false} axisLine={false} />
               <Radar name="Attributes" dataKey="value" stroke="hsl(var(--accent))" fill="hsl(var(--accent))" fillOpacity={0.6} />
             </RadarChart>
           </ResponsiveContainer>

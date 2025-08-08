@@ -8,10 +8,12 @@ import { Minus, Plus } from 'lucide-react';
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, PolarRadiusAxis } from 'recharts';
 import { ChartConfig } from '@/components/ui/chart';
 
+const chartAttributeOrder: typeof attributeNames[number][] = ['Agilidade', 'Esperteza', 'Espírito', 'Força', 'Vigor'];
+
 export default function AttributesSection() {
   const { character, updateAttribute } = useCharacterSheet();
 
-  const chartData = attributeNames.map((name) => ({
+  const chartData = chartAttributeOrder.map((name) => ({
     attribute: name,
     value: character.attributes[name] + 1, // Add 1 to each value to create the base pentagon
   }));
@@ -22,6 +24,23 @@ export default function AttributesSection() {
       color: "hsl(var(--accent))",
     },
   } satisfies ChartConfig;
+  
+  const formatTick = (value: string) => {
+    switch (value) {
+      case 'Agilidade':
+        return 'Força';
+      case 'Esperteza':
+        return 'Vigor';
+      case 'Espírito':
+        return 'Agilidade';
+      case 'Força':
+        return 'Esperteza';
+      case 'Vigor':
+        return 'Espírito';
+      default:
+        return value;
+    }
+  };
 
   return (
     <Card>
@@ -51,9 +70,9 @@ export default function AttributesSection() {
         </div>
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={chartData} startAngle={90 + 36} endAngle={90 + 36 + 360}>
+            <RadarChart data={chartData} startAngle={90} endAngle={90 + 360}>
               <PolarGrid />
-              <PolarAngleAxis dataKey="attribute" tick={{ fill: 'hsl(var(--foreground))', fontSize: 14 }} />
+              <PolarAngleAxis dataKey="attribute" tick={{ fill: 'hsl(var(--foreground))', fontSize: 14 }} tickFormatter={formatTick} />
               <PolarRadiusAxis angle={30} domain={[0, 5]} tick={false} axisLine={false} />
               <Radar name="Attributes" dataKey="value" stroke="hsl(var(--accent))" fill="hsl(var(--accent))" fillOpacity={0.6} />
             </RadarChart>
